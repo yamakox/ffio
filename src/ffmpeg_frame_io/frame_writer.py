@@ -34,7 +34,7 @@ class FrameWriter:
         self.fps = fps
         self.stdout = stdout
         video_width, video_height = size
-        self.frame = np.empty((video_height, video_width, 3), dtype=np.uint8)
+        self.frame = np.zeros((video_height, video_width, 3), dtype=np.uint8)
         output_args = [self.video_file_name]
         if audio:
             output_args.insert(0, audio)
@@ -64,6 +64,7 @@ class FrameWriter:
         try:
             self.process.stdin.close()
             self.process.wait()
+            self.__print_ffmpeg_messages()
             if self.stdout:
                 print()
         except:
@@ -83,10 +84,12 @@ class FrameWriter:
         if frame.shape != self.frame.shape:
             raise ValueError(f'Shape of frame parameter should be {self.frame.shape}, but {frame.shape}')
         self.process.stdin.write(frame.tobytes())
-        if not self.stdout:
-            return
-        if self.process.stderr.readable():
+        self.__print_ffmpeg_messages()
+    
+    def __print_ffmpeg_messages(self):
+        if self.stdout and self.process.stderr.readable():
             data = self.process.stderr.read()
             if data:
                 print(data.decode('utf-8'), end='')
             sys.stdout.flush()
+
