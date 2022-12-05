@@ -2,7 +2,8 @@
 _version.py
 
 # examples
-*.mp4
+examples/*.mp4
+examples/*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

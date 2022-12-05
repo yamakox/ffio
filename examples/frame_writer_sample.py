@@ -7,10 +7,10 @@ def main():
     x_start, y_start = -2, -2
     width, height = 4, 4
     density_per_unit = 100
-    with FrameWriter('output.mp4', size=(width * density_per_unit, height * density_per_unit), stdout=True) as writer:
-        for X in enum_frame((x_start, y_start), (width, height), density_per_unit):
-            writer.frame[:, :, 1] = X
-            writer.add_frame()
+    with FrameWriter('sample.mp4', size=(width * density_per_unit, height * density_per_unit), stdout=True) as writer:
+        for X in generate_julia_set((x_start, y_start), (width, height), density_per_unit):
+            writer.frame[:, :, 1] = 255 * X // np.max(X)
+            writer.write_frame()
 
 def julia_quadratic(zx, zy, cx, cy):
     threshold = 20
@@ -22,7 +22,7 @@ def julia_quadratic(zx, zy, cx, cy):
             return i
     return threshold - 1
 
-def enum_frame(start, dim, density_per_unit):
+def generate_julia_set(start, dim, density_per_unit):
     re = np.linspace(start[0], start[0] + dim[0], dim[0] * density_per_unit)
     im = np.linspace(start[1], start[1] + dim[1], dim[1] * density_per_unit)
     r = 0.7885
@@ -33,7 +33,6 @@ def enum_frame(start, dim, density_per_unit):
         for i in range(len(im)):
             for j in range(len(re)):
                 X[i, j] = julia_quadratic(re[j], im[i], cx, cy)
-        X = 255 * X // np.max(X)
         yield X
 
 if __name__ == '__main__':
