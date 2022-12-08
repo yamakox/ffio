@@ -20,7 +20,7 @@ sphinx-apidoc -F -H ffmpeg_frame_io -H yamakox -V v0.1 -o docs src
 
 Change conf.py:
 
-```python
+```diff
   extensions = [
       'sphinx.ext.autodoc',
       'sphinx.ext.viewcode',
@@ -37,7 +37,7 @@ Change conf.py:
 
 Change ffmpeg_frame_io.rst like this:
 
-```rst
+```diff
   .. automodule:: ffmpeg_frame_io.(any submodules)
      :members:
      :undoc-members:
