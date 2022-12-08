@@ -22,9 +22,10 @@ class FrameWriter:
     
     Example:
         with FrameWriter('sample.mp4', size=(320, 180)) as writer:
-            for i in np.linspace(0, np.pi, 100):
-                writer.frame[:,:,:] = 127 * np.array((1+np.cos(np.linspace(-i, -i+np.pi, 320)),) * 3).T
-                writer.write_frame()
+            for i in range(3):
+                for j in range(320):
+                    writer.frame[:,j,i] = 255
+                    writer.write_frame()
     '''
     def __init__(self, output_file_name: str, 
                  size: Tuple[int, int] = (1280, 720), 

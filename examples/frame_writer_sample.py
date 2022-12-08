@@ -7,7 +7,8 @@ def main():
     x_start, y_start = -2, -2
     width, height = 4, 4
     density_per_unit = 100
-    with FrameWriter('sample.mp4', size=(width * density_per_unit, height * density_per_unit), stdout=True) as writer:
+    size = (width * density_per_unit, height * density_per_unit)
+    with FrameWriter('sample.mp4', size=size, stdout=True) as writer:
         for X in generate_julia_set((x_start, y_start), (width, height), density_per_unit):
             writer.frame[:, :, 1] = 255 * X // np.max(X)
             writer.write_frame()
