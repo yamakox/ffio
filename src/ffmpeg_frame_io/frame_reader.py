@@ -6,6 +6,9 @@ from dataclasses import dataclass
 class Probe:
     '''Probing first video stream from the input video file.
 
+    Args:
+        input_file_name (str): input video file name
+
     Attributes:
         video_file_name (str): input video file name
         width (int): width of video frame
@@ -15,16 +18,14 @@ class Probe:
         duration (float): duration of video in seconds
         fps (float): frames per seconds
         n_frames (int): number of frames
-
-    Args:
-        input_file_name (str): input video file name
     '''
 
+    video_file_name: str
     width: int
     height: int
     sample_aspect_ratio: str
     display_aspect_ratio: str
-    duraiton: float
+    duration: float
     fps: float
     n_frames: int
 
@@ -44,15 +45,18 @@ class Probe:
 class FrameReader:
     '''Video frame reader from the input video file using ffmpeg.
     
-    Arrtibutes:
-        video_file_name (str): input video file name
-    
     Args:
         input_file_name (str): input video file name
         ss (float): start time in seconds
         to (float): stop time in seconds, or end time if None is specified
         n_frames (int): number of frames
+
+    Attributes:
+        video_file_name (str): input video file name
     '''
+
+    video_file_name: str
+
     def __init__(self, input_file_name: str, ss: float = 0, to: float = None, n_frames: int = None):
         self.video_file_name = input_file_name
         self.probe = Probe(input_file_name)
@@ -88,11 +92,6 @@ class FrameReader:
         
         Returns:
             np.ndarray: Array of frame buffer which shape is (height, width, 3) and dtype is np.uint8
-        
-        Example:
-            with FrameReader('sample.mp4') as reader:
-                while (frame := reader.read_frame()) is not None:
-                    # image process
         '''
         in_bytes = self.process.stdout.read(self.probe.width * self.probe.height * 3)
         if not in_bytes:

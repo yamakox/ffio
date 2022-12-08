@@ -5,6 +5,10 @@ _version.py
 examples/*.mp4
 examples/*.jpg
 
+# docs
+
+docs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
