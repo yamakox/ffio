@@ -35,7 +35,7 @@ Change conf.py:
 + html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 ```
 
-Change ffmpeg_frame_io.rst like this:
+Change ffmpeg_frame_io.rst like this if you want to avoid Sphinx's warning:
 
 ```diff
   .. automodule:: ffmpeg_frame_io.(any submodules)
