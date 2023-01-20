@@ -1,9 +1,11 @@
-# ffmpeg_frame_io
+# ffio (FFmpeg Frame IO)
+
+The video frame reader/writer from/to a video file using FFmpeg
 
 ## Install from GitHub
 
 ```bash
-pip3 install git+https://github.com/yamakox/ffmpeg_frame_io.git
+pip3 install git+https://github.com/yamakox/ffio.git
 ```
 
 ## Install from source code
@@ -22,4 +24,4 @@ python3 frame_reader_sample.py
 
 ## Build
 
-See [here](./Build.md)
+See [Build.md](./Build.md)

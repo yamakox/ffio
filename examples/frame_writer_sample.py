@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+
 # https://matplotlib.org/matplotblog/posts/animated-fractals/
 
 import numpy as np
-from ffmpeg_frame_io import FrameWriter
+from ffio import FrameWriter
 
 def main():
     x_start, y_start = -2, -2

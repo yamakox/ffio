@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 [project]
-name = "ffmpeg_frame_io"
-description = "Video frame reader/writer from/to a video file using ffmpeg."
+name = "ffio"
+description = "The video frame reader/writer from/to a video file using FFmpeg"
 dynamic = ["version"]
 authors = [
   { name="Koichi Yamamoto", email="yamakox@gmail.com" },
@@ -30,10 +30,10 @@ where = ["src"]
 
 # https://github.com/pypa/setuptools_scm
 [tool.setuptools_scm]
-write_to = "src/ffmpeg_frame_io/_version.py"
+write_to = "src/ffio/_version.py"
 version_scheme = "python-simplified-semver"
 local_scheme = "no-local-version"
 
 [project.urls]
-"Homepage" = "https://github.com/yamakox/ffmpeg_frame_io"
-"Bug Tracker" = "https://github.com/yamakox/ffmpeg_frame_io"
+"Homepage" = "https://github.com/yamakox/ffio"
+"Bug Tracker" = "https://github.com/yamakox/ffio"

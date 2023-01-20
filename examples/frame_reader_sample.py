@@ -1,4 +1,6 @@
-from ffmpeg_frame_io import FrameReader
+#!/usr/bin/env python3
+
+from ffio import FrameReader
 from PIL import Image
 
 def main():
