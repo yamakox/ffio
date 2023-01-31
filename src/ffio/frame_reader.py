@@ -88,7 +88,7 @@ class FrameReader:
             pass
 
     def read_frame(self):
-        '''Get a frame from the input video file.
+        '''Read a frame from the input video file.
         
         Returns:
             np.ndarray: Array of frame buffer which shape is (height, width, 3) and dtype is np.uint8
@@ -97,3 +97,12 @@ class FrameReader:
         if not in_bytes:
             return None
         return np.frombuffer(in_bytes, np.uint8).reshape([self.probe.height, self.probe.width, 3])
+
+    def frames(self):
+        '''Get a generator of input video frames.
+
+        Returns:
+            Generator[np.ndarray]: a generator of input video frames
+        '''
+        while (frame := self.read_frame()) is not None:
+            yield frame
