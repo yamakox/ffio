@@ -62,9 +62,9 @@ class FrameWriter:
         '''
         try:
             self.process.stdin.close()
+            self.process.wait()
             self.process.stdout.close()
             self.process.stderr.close()
-            self.process.wait()
             self.__print_ffmpeg_messages()
             if self.stdout:
                 print()
