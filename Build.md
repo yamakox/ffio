@@ -15,7 +15,7 @@ python3 -m build
 python3 -m venv venv
 . venv/bin/activate
 pip3 install -r requirements.txt
-sphinx-apidoc -F -H ffio -V v0.2 -o docs src
+sphinx-apidoc -F -H ffio -V v0.4 -o docs src
 ```
 
 Change docs/conf.py:

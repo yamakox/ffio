@@ -1,6 +1,7 @@
 import numpy as np
 import ffmpeg
 from dataclasses import dataclass
+from typing import Union
 
 @dataclass
 class Probe:
@@ -50,6 +51,7 @@ class FrameReader:
         ss (float): start time in seconds
         to (float): stop time in seconds, or end time if None is specified
         n_frames (int): number of frames
+        filter_complex (dict[str, Union[dict, list, tuple]]): definition of a complex filtergraph
 
     Attributes:
         video_file_name (str): input video file name
@@ -57,7 +59,7 @@ class FrameReader:
 
     video_file_name: str
 
-    def __init__(self, input_file_name: str, ss: float = 0, to: float = None, n_frames: int = None):
+    def __init__(self, input_file_name: str, ss: float = 0, to: float = None, n_frames: int = None, filter_complex: dict[str, Union[dict, list, tuple]] = None):
         self.video_file_name = input_file_name
         self.probe = Probe(input_file_name)
         if to is None:
@@ -65,6 +67,14 @@ class FrameReader:
         process = ffmpeg.input(input_file_name, ss=ss, to=to)
         if n_frames is not None:
             process = process.filter('fps', n_frames / (to - ss))
+        if filter_complex:
+            for k, v in filter_complex.items():
+                if type(v) == dict:
+                    process = process.filter_(k, **v)
+                elif type(v) == list or type(v) == tuple:
+                    process = process.filter_(k, *v)
+                else:
+                    process = process.filter_(k, v)
         self.process = (
             process
             .output('pipe:', format='rawvideo', pix_fmt='rgb24')
