@@ -59,7 +59,12 @@ class FrameReader:
 
     video_file_name: str
 
-    def __init__(self, input_file_name: str, ss: float = 0, to: float = None, n_frames: int = None, filter_complex: dict[str, Union[dict, list, tuple]] = None):
+    def __init__(self, 
+                 input_file_name: str, 
+                 ss: float = 0, 
+                 to: float = None, 
+                 n_frames: int = None, 
+                 filter_complex: dict[str, Union[dict, list, tuple]] = None):
         self.video_file_name = input_file_name
         self.probe = Probe(input_file_name)
         if to is None:
