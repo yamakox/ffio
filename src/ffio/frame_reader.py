@@ -19,6 +19,7 @@ class Probe:
         duration (float): duration of video in seconds
         fps (float): frames per seconds
         n_frames (int): number of frames
+        rotation (int): video rotation
     '''
 
     video_file_name: str
@@ -29,6 +30,7 @@ class Probe:
     duration: float
     fps: float
     n_frames: int
+    rotation: int
 
     def __init__(self, input_file_name: str):
         self.video_file_name = input_file_name
@@ -41,6 +43,8 @@ class Probe:
         self.duration = float(video_info['duration'])
         self.fps = eval(video_info['r_frame_rate'])
         self.n_frames = int(eval('{0}*{1}'.format(video_info['duration'], video_info['r_frame_rate'])))
+        if 'side_data_list' in video_info and len(video_info['side_data_list']):
+            self.rotation = int(video_info['side_data_list'][0]['rotation']) if 'rotation' in video_info['side_data_list'][0] else 0
 
 
 class FrameReader:
@@ -55,9 +59,13 @@ class FrameReader:
 
     Attributes:
         video_file_name (str): input video file name
+        width (int): width of rotated video frame
+        height (int): height of rotated video frame
     '''
 
     video_file_name: str
+    width: int
+    height: int
 
     def __init__(self, 
                  input_file_name: str, 
@@ -67,6 +75,12 @@ class FrameReader:
                  filter_complex: dict[str, Union[dict, list, tuple]] = None):
         self.video_file_name = input_file_name
         self.probe = Probe(input_file_name)
+        if int(self.probe.rotation) % 180:
+            self.width = self.probe.height
+            self.height = self.probe.width
+        else:
+            self.width = self.probe.width
+            self.height = self.probe.height
         if to is None:
             to = self.probe.duration
         process = ffmpeg.input(input_file_name, ss=ss, to=to)
@@ -111,7 +125,7 @@ class FrameReader:
         in_bytes = self.process.stdout.read(self.probe.width * self.probe.height * 3)
         if not in_bytes:
             return None
-        return np.frombuffer(in_bytes, np.uint8).reshape([self.probe.height, self.probe.width, 3])
+        return np.frombuffer(in_bytes, np.uint8).reshape([self.height, self.width, 3])
 
     def frames(self):
         '''Get a generator of input video frames.
