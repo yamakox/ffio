@@ -43,8 +43,10 @@ class Probe:
         self.duration = float(video_info['duration'])
         self.fps = eval(video_info['r_frame_rate'])
         self.n_frames = int(eval('{0}*{1}'.format(video_info['duration'], video_info['r_frame_rate'])))
+        self.rotation = 0
         if 'side_data_list' in video_info and len(video_info['side_data_list']):
-            self.rotation = int(video_info['side_data_list'][0]['rotation']) if 'rotation' in video_info['side_data_list'][0] else 0
+            if 'rotation' in video_info['side_data_list'][0]:
+                self.rotation = int(video_info['side_data_list'][0]['rotation'])
 
 
 class FrameReader:
