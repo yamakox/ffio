@@ -88,7 +88,6 @@ class FrameReader:
         process = ffmpeg.input(input_file_name, ss=ss, to=to)
         if n_frames is not None:
             process = process.filter('fps', n_frames / (to - ss))
-        process = process.filter('colorspace', 'bt709', iall='bt601-6-525', fast='1')
         if filter_complex:
             for k, v in filter_complex.items():
                 if type(v) == dict:
