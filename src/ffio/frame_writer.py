@@ -47,7 +47,7 @@ class FrameWriter:
             output_args.insert(0, audio)
         self.process = (
             ffmpeg
-            .input('pipe:', format='rawvideo', pix_fmt='rgb24', r=fps, s=f'{video_width}x{video_height}')
+            .input('pipe:', format='rawvideo', pix_fmt='yuv420p', r=fps, s=f'{video_width}x{video_height}')
             .output(*output_args, pix_fmt=pix_fmt, video_bitrate=bitrate, qmin=qmin, qmax=qmax)
             .overwrite_output()
             .run_async(pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)
