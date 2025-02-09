@@ -48,7 +48,11 @@ class FrameWriter:
         self.process = (
             ffmpeg
             .input('pipe:', format='rawvideo', pix_fmt='rgb24', r=fps, s=f'{video_width}x{video_height}')
-            .output(*output_args, pix_fmt=pix_fmt, video_bitrate=bitrate, qmin=qmin, qmax=qmax)
+            .filter_('colorspace', 'bt709', iall='bt601-6-625', fast='1')
+            .output(*output_args, 
+                    sws_flags='+accurate_rnd+full_chroma_int', 
+                    color_range=1, colorspace=1, color_primaries=1, color_trc=1, 
+                    pix_fmt=pix_fmt, video_bitrate=bitrate, qmin=qmin, qmax=qmax)
             .overwrite_output()
             .run_async(pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)
         )
