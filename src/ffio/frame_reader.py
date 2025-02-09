@@ -58,11 +58,13 @@ class FrameReader:
         to (float): stop time in seconds, or end time if None is specified
         n_frames (int): number of frames
         filter_complex (dict[str, Union[dict, list, tuple]]): definition of a complex filtergraph
+        pix_fmt (str): output pixel format: only "rgb24" (default) or "rgb48" supported
 
     Attributes:
         video_file_name (str): input video file name
         width (int): width of rotated video frame
         height (int): height of rotated video frame
+        pix_fmt (str): output pixel format
     '''
 
     video_file_name: str
@@ -74,7 +76,12 @@ class FrameReader:
                  ss: float = 0, 
                  to: float = None, 
                  n_frames: int = None, 
-                 filter_complex: dict[str, Union[dict, list, tuple]] = None):
+                 filter_complex: dict[str, Union[dict, list, tuple]] = None, 
+                 pix_fmt: str = 'rgb24'):
+        if pix_fmt not in ['rgb24', 'rgb48']:
+            raise  ValueError('pix_fmt must be "rgb24" or "rgb48"')
+        self.pix_fmt = pix_fmt
+        self.dtype, self.dbytes = (np.uint8, 1) if pix_fmt == 'rgb24' else (np.uint16, 2)
         self.video_file_name = input_file_name
         self.probe = Probe(input_file_name)
         if int(self.probe.rotation) % 180:
@@ -98,7 +105,7 @@ class FrameReader:
                     process = process.filter_(k, v)
         self.process = (
             process
-            .output('pipe:', format='rawvideo', pix_fmt='rgb24')
+            .output('pipe:', format='rawvideo', pix_fmt=pix_fmt)
             .run_async(pipe_stdout=True, pipe_stderr=True)
         )
 
@@ -122,12 +129,12 @@ class FrameReader:
         '''Read a frame from the input video file.
         
         Returns:
-            np.ndarray: Array of frame buffer which shape is (height, width, 3) and dtype is np.uint8
+            np.ndarray: Array of frame buffer which shape is (height, width, 3) and dtype is np.uint8 (rgb24) or np.uint16 (rgb48)
         '''
-        in_bytes = self.process.stdout.read(self.probe.width * self.probe.height * 3)
+        in_bytes = self.process.stdout.read(self.probe.width * self.probe.height * 3 * self.dbytes)
         if not in_bytes:
             return None
-        return np.frombuffer(in_bytes, np.uint8).reshape([self.height, self.width, 3])
+        return np.frombuffer(in_bytes, self.dtype).reshape([self.height, self.width, 3])
 
     def frames(self):
         '''Get a generator of input video frames.
