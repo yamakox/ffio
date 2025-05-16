@@ -3,19 +3,16 @@
 ## Build
 
 ```bash
-python3 -m venv venv
-. venv/bin/activate
-pip3 install -r requirements.txt
-python3 -m build
+poetry build
 ```
 
 ## Build docs
 
 ```bash
-python3 -m venv venv
-. venv/bin/activate
-pip3 install -r requirements.txt
-sphinx-apidoc -F -H ffio -V v0.4 -o docs src
+poetry install --with dev
+. .venv/bin/activate
+FFIO_VERSION=$(python3 -c "from importlib.metadata import version; import ffio; print(version('ffio'))")
+sphinx-apidoc -F -H ffio -V v$FFIO_VERSION -o docs src
 ```
 
 Change docs/conf.py:
@@ -25,24 +22,34 @@ Change docs/conf.py:
       'sphinx.ext.autodoc',
       'sphinx.ext.viewcode',
       'sphinx.ext.todo',
++     'sphinx_rtd_theme',
 +     'sphinx.ext.napoleon',
   ]
 
 - html_theme = 'alabaster'
 - html_static_path = ['_static']
-+ import sphinx_rtd_theme
 + html_theme = 'sphinx_rtd_theme'
-+ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 ```
 
 Change docs/ffio.rst like this if you want to avoid Sphinx's warning:
 
 ```diff
-  .. automodule:: ffio.(any submodules)
-     :members:
-     :undoc-members:
-     :show-inheritance:
+- Submodules
+- ----------
+
+  .. automodule:: ffio.frame_reader
 +    :noindex:
+
+  .. automodule:: ffio.frame_writer
++    :noindex:
+
+- Module contents
+- ---------------
+- 
+- .. automodule:: ffio
+-    :members:
+-    :show-inheritance:
+-    :undoc-members:
 ```
 
 ```bash

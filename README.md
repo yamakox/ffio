@@ -11,7 +11,8 @@ pip3 install git+https://github.com/yamakox/ffio.git
 ## Install from source code
 
 ```bash
-pip3 install -e .
+poetry install
+. .venv/bin/activate
 ```
 
 ## Examples
@@ -24,4 +25,4 @@ python3 frame_reader_sample.py
 
 ## Build
 
-See [Build.md](./Build.md)
+Please see [Build.md](./Build.md).
