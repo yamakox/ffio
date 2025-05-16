@@ -12,7 +12,7 @@ pip3 install git+https://github.com/yamakox/ffio.git
 
 ```bash
 poetry install
-. .venv/bin/activate
+eval $(poetry env activate)
 ```
 
 ## Examples
