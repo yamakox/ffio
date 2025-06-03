@@ -40,7 +40,6 @@ class FrameWriter:
         self.fps = fps
         self.stdout = stdout
         video_width, video_height = size
-        self.frame = np.zeros((video_height, video_width, 3), dtype=np.uint8)
         output_args = [self.video_file_name]
         if audio:
             output_args.insert(0, audio)
@@ -50,6 +49,12 @@ class FrameWriter:
             input_pix_fmt, output_pix_fmt = 'rgb24', pix_fmt
         else:
             raise ValueError('Type of pix_fmt must be str or tuple[str, str]')
+        if input_pix_fmt == 'rgb24':
+            self.frame = np.zeros((video_height, video_width, 3), dtype=np.uint8)
+        elif input_pix_fmt == 'rgb48':
+            self.frame = np.zeros((video_height, video_width, 3), dtype=np.uint16)
+        else:
+            raise ValueError(f'Unsupported input pixel format: {input_pix_fmt}')
         self.process = (
             ffmpeg
             .input('pipe:', format='rawvideo', pix_fmt=input_pix_fmt, r=fps, s=f'{video_width}x{video_height}')
