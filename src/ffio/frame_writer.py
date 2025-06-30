@@ -1,6 +1,7 @@
 import numpy as np
 import ffmpeg
 import sys, os, time
+from typing import Any
 if sys.platform != 'win32':
     import fcntl
 
@@ -34,13 +35,13 @@ class FrameWriter:
                  qmin: int = 2, 
                  qmax: int = 31, 
                  pix_fmt: str|tuple[str, str] = 'yuv420p', 
-                 audio: ffmpeg.nodes.FilterableStream = None, 
+                 audio: ffmpeg.nodes.FilterableStream|None = None, 
                  stdout: bool = False):
         self.video_file_name = output_file_name
         self.fps = fps
         self.stdout = stdout
         video_width, video_height = size
-        output_args = [self.video_file_name]
+        output_args: list[Any] = [self.video_file_name]
         if audio:
             output_args.insert(0, audio)
         if isinstance(pix_fmt, tuple) or isinstance(pix_fmt, list):
@@ -60,7 +61,7 @@ class FrameWriter:
             .input('pipe:', format='rawvideo', pix_fmt=input_pix_fmt, r=fps, s=f'{video_width}x{video_height}')
             .filter_('colorspace', 'bt709', iall='bt601-6-625', fast='1')
             .output(*output_args, 
-                    sws_flags='+accurate_rnd+full_chroma_int', 
+                    sws_flags='spline+accurate_rnd+full_chroma_int', 
                     color_range=1, colorspace=1, color_primaries=1, color_trc=1, 
                     pix_fmt=output_pix_fmt, video_bitrate=bitrate, qmin=qmin, qmax=qmax)
             .overwrite_output()
