@@ -1,5 +1,6 @@
 import numpy as np
 import ffmpeg
+import subprocess
 import sys, os, time
 from typing import Any
 if sys.platform != 'win32':
@@ -58,7 +59,7 @@ class FrameWriter:
             raise ValueError(f'Unsupported input pixel format: {input_pix_fmt}')
         if sys.platform == 'win32':
             self.stdout = False
-        self.process = (
+        args = (
             ffmpeg
             .input('pipe:', format='rawvideo', pix_fmt=input_pix_fmt, r=fps, s=f'{video_width}x{video_height}')
             .filter_('colorspace', 'bt709', iall='bt601-6-625', fast='1')
@@ -67,7 +68,13 @@ class FrameWriter:
                     color_range=1, colorspace=1, color_primaries=1, color_trc=1, 
                     pix_fmt=output_pix_fmt, video_bitrate=bitrate, qmin=qmin, qmax=qmax)
             .overwrite_output()
-            .run_async(pipe_stdin=True, pipe_stdout=True, pipe_stderr=self.stdout)
+            .compile()
+        )
+        self.process = subprocess.Popen(
+            args, 
+            stdin=subprocess.PIPE, 
+            stdout=subprocess.DEVNULL, 
+            stderr=subprocess.PIPE if self.stdout else subprocess.DEVNULL
         )
         if self.stdout:
             fl =  fcntl.fcntl(self.process.stderr, fcntl.F_GETFL)
@@ -86,8 +93,8 @@ class FrameWriter:
             self.process.stdin.close()
             self.process.wait()
             self.process.stdout.close()
+            self.process.stderr.close()
             if self.stdout:
-                self.process.stderr.close()
                 self.__print_ffmpeg_messages()
                 print()
         except:
@@ -115,4 +122,3 @@ class FrameWriter:
             if data:
                 print(data.decode('utf-8'), end='')
             sys.stdout.flush()
-

@@ -1,5 +1,6 @@
 import numpy as np
 import ffmpeg
+import subprocess
 from dataclasses import dataclass
 from typing import Union
 
@@ -103,10 +104,15 @@ class FrameReader:
                     process = process.filter_(k, *v)
                 else:
                     process = process.filter_(k, v)
-        self.process = (
+        args = (
             process
             .output('pipe:', format='rawvideo', pix_fmt=pix_fmt)
-            .run_async(pipe_stdout=True, pipe_stderr=False)
+            .compile()
+        )
+        self.process = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
         )
 
     def __enter__(self):
