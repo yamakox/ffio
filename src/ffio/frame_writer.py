@@ -56,6 +56,8 @@ class FrameWriter:
             self.frame = np.zeros((video_height, video_width, 3), dtype=np.uint16)
         else:
             raise ValueError(f'Unsupported input pixel format: {input_pix_fmt}')
+        if sys.platform == 'win32':
+            self.stdout = False
         self.process = (
             ffmpeg
             .input('pipe:', format='rawvideo', pix_fmt=input_pix_fmt, r=fps, s=f'{video_width}x{video_height}')
@@ -65,14 +67,11 @@ class FrameWriter:
                     color_range=1, colorspace=1, color_primaries=1, color_trc=1, 
                     pix_fmt=output_pix_fmt, video_bitrate=bitrate, qmin=qmin, qmax=qmax)
             .overwrite_output()
-            .run_async(pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)
+            .run_async(pipe_stdin=True, pipe_stdout=True, pipe_stderr=self.stdout)
         )
         if self.stdout:
-            if sys.platform != 'win32':
-                fl =  fcntl.fcntl(self.process.stderr, fcntl.F_GETFL)
-                fcntl.fcntl(self.process.stderr, fcntl.F_SETFL, fl|os.O_NONBLOCK)
-            else:
-                self.stdout = False
+            fl =  fcntl.fcntl(self.process.stderr, fcntl.F_GETFL)
+            fcntl.fcntl(self.process.stderr, fcntl.F_SETFL, fl|os.O_NONBLOCK)
 
     def __enter__(self):
         return self
@@ -87,9 +86,9 @@ class FrameWriter:
             self.process.stdin.close()
             self.process.wait()
             self.process.stdout.close()
-            self.process.stderr.close()
-            self.__print_ffmpeg_messages()
             if self.stdout:
+                self.process.stderr.close()
+                self.__print_ffmpeg_messages()
                 print()
         except:
             pass

@@ -106,7 +106,7 @@ class FrameReader:
         self.process = (
             process
             .output('pipe:', format='rawvideo', pix_fmt=pix_fmt)
-            .run_async(pipe_stdout=True, pipe_stderr=True)
+            .run_async(pipe_stdout=True, pipe_stderr=False)
         )
 
     def __enter__(self):
@@ -120,7 +120,6 @@ class FrameReader:
         '''
         try:
             self.process.stdout.close()
-            self.process.stderr.close()
             self.process.wait()
         except:
             pass
