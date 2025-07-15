@@ -1,5 +1,8 @@
 .DS_Store
 
+# poetry
+poetry.lock
+
 # setuptools_scm
 _version.py
 
