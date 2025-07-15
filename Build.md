@@ -11,7 +11,7 @@ poetry build
 ```bash
 poetry install --with dev
 eval $(poetry env activate)
-FFIO_VERSION=$(python3 -c "from importlib.metadata import version; import ffio; print(version('ffio'))")
+FFIO_VERSION=$(python -c "from importlib.metadata import version; import ffio; print(version('ffio'))")
 sphinx-apidoc -F -H ffio -V v$FFIO_VERSION -o docs src
 ```
 

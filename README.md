@@ -5,7 +5,7 @@ The video frame reader/writer from/to a video file using FFmpeg
 ## Install from GitHub
 
 ```bash
-pip3 install git+https://github.com/yamakox/ffio.git
+pip install git+https://github.com/yamakox/ffio.git
 ```
 
 ## Install from source code
@@ -19,8 +19,9 @@ eval $(poetry env activate)
 
 ```bash
 cd examples
-python3 frame_writer_sample.py
-python3 frame_reader_sample.py
+pip install -r requirements.txt
+python frame_writer_sample.py
+python frame_reader_sample.py
 ```
 
 ## Build

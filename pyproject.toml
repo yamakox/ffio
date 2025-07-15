@@ -17,7 +17,6 @@ requires-python = ">=3.12"
 dependencies = [
     "ffmpeg-python >= 0.2.0",
     "numpy >= 2.0.0",
-    "pillow >= 11.0.0",
 ]
 
 [project.urls]
@@ -29,6 +28,9 @@ build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry]
 version = "0.0.0"
+
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
 # HowTo: poetry add sphinx sphinx-rtd-theme --group dev && poetry install --with dev
